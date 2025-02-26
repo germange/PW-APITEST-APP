@@ -1,0 +1,22 @@
+{
+  "name": "pw-apitest-app",
+  "version": "1.0.0",
+  "description": "Test",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/germange/PW-APITEST-APP.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/germange/PW-APITEST-APP/issues"
+  },
+  "homepage": "https://github.com/germange/PW-APITEST-APP#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.50.1",
+    "@types/node": "^22.13.5"
+  }
+}
