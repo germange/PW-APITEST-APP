@@ -8,11 +8,12 @@ test.beforeEach( async ({page}) => {
     })
   })
   await page.goto('https://conduit.bondaracademy.com/')
-  await page.getByText('Sign In').click()
+
+  // authentification before refactoring example
+  /*await page.getByText('Sign In').click()
   await page.getByRole('textbox', {name: "Email"}).fill('blandino@test.com')
   await page.getByRole('textbox', {name: "Password"}).fill('1111')
-  await page.getByRole('button').click()
-
+  await page.getByRole('button').click()*/
   await page.waitForTimeout(1000)
 })
 
@@ -36,21 +37,23 @@ test('has title', async ({ page }) => {
 });
 
 test('delete article', async ({ page, request }) => {
-  const responce = await request.post('https://conduit-api.bondaracademy.com/api/users/login', {
+  //Getting token without env variable
+  /*const responce = await request.post('https://conduit-api.bondaracademy.com/api/users/login', {
     data: {
       "user":{"email":"blandino@test.com","password":"1111"}
     }
   })
   const responceBody = await responce.json()
-  const accessToken = responceBody.user.token
+  const accessToken = responceBody.user.token*/
 
   const articleResponce = await request.post('https://conduit-api.bondaracademy.com/api/articles/', {
     data: {
       "article":{"title":"This is a test article","description":"This is a test description","body":"This is test body","tagList":[]}
     },
+    /*
     headers: {
       Authorization:`Token ${accessToken}`
-    }
+    }*/
   })
   expect (articleResponce.status()).toEqual(201)
 
@@ -62,3 +65,34 @@ test('delete article', async ({ page, request }) => {
   await expect(page.locator('app-article-list h1').first()).not.toContainText('This is a test article')
 })
 
+test('create article', async ({ page,request }) => {
+  await page.getByText('New Article').click()
+  await page.getByRole('textbox', {name: 'Article Title'}).fill('Playwright is awesome')
+  await page.getByRole('textbox', {name: 'What\'s this article about?'}).fill('About the Playwright')
+  await page.getByRole('textbox', {name: 'Write your article (in markdown)'}).fill('We like to use playwright for automation')
+  await page.getByRole('button', {name: 'Publish Article'}).first().click()
+  const articleResponce = await page.waitForResponse('https://conduit-api.bondaracademy.com/api/articles/')
+  const articleResponceBody = await articleResponce.json()
+  const slugId = articleResponceBody.article.slug
+
+  await expect(page.locator('.article-page h1')).toContainText('Playwright is awesome')
+  await page.getByText('Home').click()
+  await page.getByText('Global Feed').click()
+
+  await expect(page.locator('app-article-list h1').first()).toContainText('Playwright is awesome')
+  //Getting token without env variable
+  /*const responce = await request.post('https://conduit-api.bondaracademy.com/api/users/login', {
+    data: {
+      "user":{"email":"blandino@test.com","password":"1111"}
+    }
+  })
+  const responceBody = await responce.json()
+  const accessToken = responceBody.user.token*/
+
+  const deleteArticleResponce = await request.delete(`https://conduit-api.bondaracademy.com/api/articles/${slugId}`, { 
+   /*headers: {
+    Authorization:`Token ${accessToken}`
+  }*/})
+
+  expect (deleteArticleResponce.status()).toEqual(204)
+  })

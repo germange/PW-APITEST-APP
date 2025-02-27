@@ -16,7 +16,7 @@
   },
   "homepage": "https://github.com/germange/PW-APITEST-APP#readme",
   "devDependencies": {
-    "@playwright/test": "^1.50.1",
+    "@playwright/test": "1.43.0",
     "@types/node": "^22.13.5"
   }
 }
